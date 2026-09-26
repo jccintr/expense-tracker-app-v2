@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { listTransactionsByDay, deleteTransaction } from '../api/transactionsApi';
-import { formatDateSP, addDaysToDateString, formatDayLabel, isTodayDateString, isFutureDateString } from '../utils/date';
+import { formatDateSP, addDaysToDateString, formatDayLabel, formatDateBR, isTodayDateString, isFutureDateString } from '../utils/date';
 import { formatMoney } from '../utils/money';
 import TransactionRow from '../components/TransactionRow';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -83,7 +83,7 @@ export default function TransacoesScreen({ navigation }) {
         <Pressable onPress={() => setPickerOpen(true)} style={styles.dateLabel}>
           <Text style={{ color: colors.text, fontSize: 16, fontWeight: '700' }}>{formatDayLabel(dateStr)}</Text>
           {!isTodayDateString(dateStr) && (
-            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{dateStr}</Text>
+            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{formatDateBR(dateStr)}</Text>
           )}
         </Pressable>
 

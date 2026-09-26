@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, useState } from 'react';
+import { createContext, useContext, useCallback, useState, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import { listAccounts } from '../api/accountsApi';
 import { listCategories } from '../api/categoriesApi';
@@ -32,11 +32,16 @@ export function DataProvider({ children }) {
     await Promise.all([refreshAccounts(), refreshCategories()]);
   }, [refreshAccounts, refreshCategories]);
 
-  return (
-    <DataContext.Provider value={{ accounts, categories, refreshAccounts, refreshCategories, refreshAll }}>
-      {children}
-    </DataContext.Provider>
+  // value memoizado de propósito — mesmo motivo do AuthContext: sem isso,
+  // um objeto novo a cada render do DataProvider re-renderiza (e, pior,
+  // pode re-disparar efeitos que dependem de refreshAll/refreshAccounts/
+  // refreshCategories em quem consome useAppData()).
+  const value = useMemo(
+    () => ({ accounts, categories, refreshAccounts, refreshCategories, refreshAll }),
+    [accounts, categories, refreshAccounts, refreshCategories, refreshAll]
   );
+
+  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
 
 export function useAppData() {

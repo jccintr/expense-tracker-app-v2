@@ -6,7 +6,7 @@ import { Feather } from '@expo/vector-icons';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { fetchWeekSummary, fetchCategorySummary } from '../api/transactionsApi';
-import { getCurrentServerWeekNumber } from '../utils/date';
+import { getCurrentServerWeekNumber, formatDateBR } from '../utils/date';
 import { formatMoney } from '../utils/money';
 import WeeklyBarChart from '../components/WeeklyBarChart';
 import MonthlyPieChart from '../components/MonthlyPieChart';
@@ -109,7 +109,7 @@ export default function GraficosScreen() {
               <Feather name="chevron-left" size={22} color={colors.text} />
             </Pressable>
             <Text style={{ color: colors.text, fontWeight: '700' }}>
-              {weekData ? `${weekData.first_day} — ${weekData.last_day}` : '...'}
+              {weekData ? `${formatDateBR(weekData.first_day)} — ${formatDateBR(weekData.last_day)}` : '...'}
             </Text>
             <Pressable onPress={() => setWeekNumber((w) => w + 1)} hitSlop={10}>
               <Feather name="chevron-right" size={22} color={colors.text} />

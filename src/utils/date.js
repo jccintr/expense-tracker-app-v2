@@ -148,3 +148,14 @@ export function getServerWeekNumberForDate(targetDateStr) {
 export function getCurrentServerWeekNumber() {
   return getServerWeekNumberForDate(formatDateSP(nowSP()));
 }
+
+// Converte 'AAAA-MM-DD' (o formato que a API espera e que o resto do app
+// usa internamente pra cálculo/navegação) pro formato que aparece pro
+// usuário: 'DD-MM-AAAA'. Só usar isso na hora de EXIBIR — nunca no valor
+// que é mandado de volta pra API ou guardado em estado (dateStr, minDate,
+// maxDate continuam em AAAA-MM-DD por baixo).
+export function formatDateBR(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}-${m}-${y}`;
+}

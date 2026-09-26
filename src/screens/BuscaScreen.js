@@ -6,7 +6,7 @@ import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
 import { searchTransactions, deleteTransaction } from '../api/transactionsApi';
-import { formatDateSP } from '../utils/date';
+import { formatDateSP, formatDateBR } from '../utils/date';
 import ScreenHeader from '../components/ScreenHeader';
 import TextField from '../components/inputs/TextField';
 import SelectField from '../components/inputs/SelectField';
@@ -78,7 +78,7 @@ export default function BuscaScreen({ navigation }) {
             onPress={() => setPickerFor('min')}
           >
             <Text style={{ color: minDate ? colors.text : colors.placeholder, fontSize: 14 }}>
-              {minDate || 'Data inicial'}
+              {minDate ? formatDateBR(minDate) : 'Data inicial'}
             </Text>
           </Pressable>
           <Pressable
@@ -86,7 +86,7 @@ export default function BuscaScreen({ navigation }) {
             onPress={() => setPickerFor('max')}
           >
             <Text style={{ color: maxDate ? colors.text : colors.placeholder, fontSize: 14 }}>
-              {maxDate || 'Data final'}
+              {maxDate ? formatDateBR(maxDate) : 'Data final'}
             </Text>
           </Pressable>
         </View>

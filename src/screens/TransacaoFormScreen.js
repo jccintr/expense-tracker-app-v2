@@ -72,7 +72,7 @@ export default function TransacaoFormScreen({ route, navigation }) {
       <View style={styles.container}>
         {!isEdit && (
           <Text style={[styles.notice, { color: colors.textSecondary, backgroundColor: colors.surfaceAlt }]}>
-            A transação é sempre criada com a data/hora de agora — não dá pra cadastrar num dia passado.
+            A transação é sempre criada com a data/hora de agora, não é possível cadastrar com datas passadas.
           </Text>
         )}
 

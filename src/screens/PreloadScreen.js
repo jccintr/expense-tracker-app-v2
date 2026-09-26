@@ -58,7 +58,14 @@ export default function PreloadScreen({ navigation }) {
 
   useEffect(() => {
     check();
-  }, [check]);
+    // Roda só uma vez, quando a tela monta — checar a sessão salva é uma
+    // ação de "montagem", não algo que deveria repetir sempre que `check`
+    // mudar de identidade. Isso é reforço extra: mesmo com AuthContext/
+    // DataContext já memoizando signIn/refreshAll (o que elimina a causa
+    // raiz do problema), manter esse efeito como "rode uma vez" é o
+    // comportamento correto de qualquer forma.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
