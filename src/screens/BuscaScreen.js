@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
 import { searchTransactions, deleteTransaction } from '../api/transactionsApi';
 import { formatDateSP } from '../utils/date';
+import ScreenHeader from '../components/ScreenHeader';
 import TextField from '../components/inputs/TextField';
 import SelectField from '../components/inputs/SelectField';
 import PrimaryButton from '../components/PrimaryButton';
@@ -62,6 +63,7 @@ export default function BuscaScreen({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScreenHeader title="Buscar transações" onPress={() => navigation.goBack()} />
       <View style={styles.filters}>
         <TextField
           label="Descrição"

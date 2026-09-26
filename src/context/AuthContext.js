@@ -15,6 +15,19 @@ export function AuthProvider({ children }) {
   // Authorization das próximas chamadas.
   const signIn = async (newToken, newUser) => {
     await AsyncStorage.setItem(TOKEN_KEY, newToken);
+
+    // Não confia cegamente em setItem() ter resolvido sem erro — relê na
+    // hora e compara. Existem relatos conhecidos (GitHub issues do próprio
+    // AsyncStorage) de escritas que resolvem a Promise mas, em cenários
+    // específicos de Android, não persistem de fato. Se isso acontecer,
+    // preferimos falhar ALTO e NA HORA (erro explícito aqui, mostrado pelo
+    // catch do LoginScreen) do que descobrir só quando o app reabrir e a
+    // sessão sumiu sem nenhuma pista do motivo.
+    const verify = await AsyncStorage.getItem(TOKEN_KEY);
+    if (verify !== newToken) {
+      throw new Error('Não foi possível salvar sua sessão neste aparelho. Tente fazer login novamente.');
+    }
+
     setToken(newToken);
     setUser(newUser);
   };

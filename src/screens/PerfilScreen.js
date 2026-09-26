@@ -1,4 +1,5 @@
 import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -7,6 +8,7 @@ import PrimaryButton from '../components/PrimaryButton';
 export default function PerfilScreen({ navigation }) {
   const { colors } = useAppTheme();
   const { user, signOut } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const handleLogout = () => {
     Alert.alert('Sair', 'Deseja sair da sua conta?', [
@@ -23,7 +25,7 @@ export default function PerfilScreen({ navigation }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top + 40 }]}>
       <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
         <Text style={styles.avatarInitial}>{user?.name?.charAt(0)?.toUpperCase() ?? '?'}</Text>
       </View>
@@ -58,7 +60,7 @@ export default function PerfilScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', paddingTop: 60, paddingHorizontal: 24 },
+  container: { flex: 1, alignItems: 'center', paddingHorizontal: 24 },
   avatar: { width: 84, height: 84, borderRadius: 42, alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
   avatarInitial: { fontSize: 32, fontWeight: '800', color: '#FFFFFF' },
   name: { fontSize: 18, fontWeight: '700' },

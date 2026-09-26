@@ -6,6 +6,7 @@ import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
 import { deleteCategory } from '../api/categoriesApi';
+import ScreenHeader from '../components/ScreenHeader';
 import ConfirmModal from '../components/ConfirmModal';
 
 export default function CategoriasScreen({ navigation }) {
@@ -44,6 +45,7 @@ export default function CategoriasScreen({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScreenHeader title="Categorias" onPress={() => navigation.goBack()} />
       {loading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={colors.primary} />

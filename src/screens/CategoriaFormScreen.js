@@ -3,7 +3,7 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
-import ModalHeader from '../components/ModalHeader';
+import ScreenHeader from '../components/ScreenHeader';
 import TextField from '../components/inputs/TextField';
 import PrimaryButton from '../components/PrimaryButton';
 import { createCategory, updateCategory } from '../api/categoriesApi';
@@ -41,7 +41,7 @@ export default function CategoriaFormScreen({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <ModalHeader title={isEdit ? 'Editar categoria' : 'Nova categoria'} onClose={() => navigation.goBack()} />
+      <ScreenHeader icon="close" title={isEdit ? 'Editar categoria' : 'Nova categoria'} onPress={() => navigation.goBack()} />
       <View style={styles.container}>
         <TextField label="Nome da categoria" placeholder="Ex: Transporte" value={name} onChangeText={setName} />
         <PrimaryButton
@@ -55,5 +55,5 @@ export default function CategoriaFormScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
+  container: { flex: 1, padding: 20 }
 });

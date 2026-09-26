@@ -7,6 +7,7 @@ import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
 import { deleteAccount } from '../api/accountsApi';
+import ScreenHeader from '../components/ScreenHeader';
 import ConfirmModal from '../components/ConfirmModal';
 
 export default function ContasScreen({ navigation }) {
@@ -47,6 +48,7 @@ export default function ContasScreen({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <ScreenHeader title="Contas" onPress={() => navigation.goBack()} />
       {loading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color={colors.primary} />

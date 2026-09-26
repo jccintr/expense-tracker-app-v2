@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
 import { useAppTheme } from '../theme/ThemeContext';
-import ModalHeader from '../components/ModalHeader';
+import ScreenHeader from '../components/ScreenHeader';
 import TextField from '../components/inputs/TextField';
 import SelectField from '../components/inputs/SelectField';
 import PrimaryButton from '../components/PrimaryButton';
@@ -65,9 +65,9 @@ export default function TransacaoFormScreen({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <ModalHeader
+      <ScreenHeader icon="close"
         title={isEdit ? 'Editar transação' : 'Nova transação'}
-        onClose={() => navigation.goBack()}
+        onPress={() => navigation.goBack()}
       />
       <View style={styles.container}>
         {!isEdit && (

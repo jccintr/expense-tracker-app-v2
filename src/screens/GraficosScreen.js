@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +19,7 @@ const MONTH_NAMES = [
 export default function GraficosScreen() {
   const { colors } = useAppTheme();
   const { token } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const [mode, setMode] = useState('week'); // 'week' | 'month'
 
@@ -81,7 +83,10 @@ export default function GraficosScreen() {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + 16 }]}
+    >
       <View style={[styles.toggle, { backgroundColor: colors.surfaceAlt }]}>
         <Pressable
           onPress={() => setMode('week')}
@@ -159,8 +164,8 @@ export default function GraficosScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { padding: 16, paddingBottom: 40 },
-  toggle: { flexDirection: 'row', borderRadius: 10, padding: 4, marginBottom: 16 },
-  toggleButton: { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 8 },
+  toggle: { flexDirection: 'row', width: '100%', borderRadius: 10, padding: 4, marginBottom: 16 },
+  toggleButton: { width: '50%', alignItems: 'center', justifyContent: 'center', paddingVertical: 10, borderRadius: 8 },
   card: { borderWidth: 1, borderRadius: 14, padding: 16 },
   navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
   total: { fontSize: 22, fontWeight: '800', textAlign: 'center', marginBottom: 16 },

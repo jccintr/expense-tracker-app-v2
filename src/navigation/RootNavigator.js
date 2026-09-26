@@ -20,22 +20,20 @@ export default function RootNavigator() {
     <Stack.Navigator
       initialRouteName="Preload"
       screenOptions={{
-        headerStyle: { backgroundColor: colors.surface },
-        headerTintColor: colors.text,
-        headerShadowVisible: false,
+        headerShown: false,
         contentStyle: { backgroundColor: colors.background },
       }}
     >
-      <Stack.Screen name="Preload" component={PreloadScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Cadastro" component={CadastroScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Preload" component={PreloadScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Cadastro" component={CadastroScreen} />
+      <Stack.Screen name="Home" component={TabNavigator} />
 
-      <Stack.Screen name="Busca" component={BuscaScreen} options={{ title: 'Buscar transações' }} />
-      <Stack.Screen name="Contas" component={ContasScreen} options={{ title: 'Contas' }} />
-      <Stack.Screen name="Categorias" component={CategoriasScreen} options={{ title: 'Categorias' }} />
+      <Stack.Screen name="Busca" component={BuscaScreen} />
+      <Stack.Screen name="Contas" component={ContasScreen} />
+      <Stack.Screen name="Categorias" component={CategoriasScreen} />
 
-      <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen name="TransacaoForm" component={TransacaoFormScreen} />
         <Stack.Screen name="ContaForm" component={ContaFormScreen} />
         <Stack.Screen name="CategoriaForm" component={CategoriaFormScreen} />

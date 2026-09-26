@@ -3,7 +3,7 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
-import ModalHeader from '../components/ModalHeader';
+import ScreenHeader from '../components/ScreenHeader';
 import TextField from '../components/inputs/TextField';
 import PrimaryButton from '../components/PrimaryButton';
 import { createAccount, updateAccount } from '../api/accountsApi';
@@ -41,7 +41,7 @@ export default function ContaFormScreen({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <ModalHeader title={isEdit ? 'Editar conta' : 'Nova conta'} onClose={() => navigation.goBack()} />
+      <ScreenHeader icon="close" title={isEdit ? 'Editar conta' : 'Nova conta'} onPress={() => navigation.goBack()} />
       <View style={styles.container}>
         <TextField label="Nome da conta" placeholder="Ex: Cartão Nubank" value={name} onChangeText={setName} />
         <PrimaryButton
