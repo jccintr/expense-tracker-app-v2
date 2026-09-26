@@ -37,7 +37,13 @@ async function request(path, { method = 'GET', body, token } = {}) {
   const data = response.status === 204 ? null : await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(extractErrorMessage(data, `Erro inesperado (${response.status}).`));
+    const httpError = new Error(extractErrorMessage(data, `Erro inesperado (${response.status}).`));
+    // Sem isso, quem chama (ex: PreloadScreen) não tem como distinguir uma
+    // falha de rede de verdade (fetch rejeitou, error.status fica undefined)
+    // de um erro HTTP normal (a requisição chegou e voltou, só que com
+    // status de erro) — as duas caíam na mesma mensagem de "sem conexão".
+    httpError.status = response.status;
+    throw httpError;
   }
 
   return data;

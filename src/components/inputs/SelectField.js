@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, Pressable, Modal, FlatList, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useAppTheme } from '../../theme/ThemeContext';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Seletor tipo "select" — mostra o valor escolhido numa caixa com a mesma
 // cara do TextField, e abre uma lista em modal pra escolher. Usado pra
@@ -13,7 +13,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function SelectField({ label, value, options, onChange, placeholder = 'Selecione' }) {
   const { colors } = useAppTheme();
   const [open, setOpen] = useState(false);
-  const insets = useSafeAreaInsets();
   const selectedOption = options.find((o) => o.value === value);
 
   return (
@@ -31,36 +30,69 @@ export default function SelectField({ label, value, options, onChange, placehold
       </Pressable>
 
       <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
-        <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
-          <Pressable
-            style={[styles.sheet, { backgroundColor: colors.surface,  paddingBottom: Math.max(insets.bottom, 24) }]}
-            onPress={(e) => e.stopPropagation()}
-          >
-            <Text style={[styles.sheetTitle, { color: colors.text }]}>{label || 'Selecione'}</Text>
-            <FlatList
-              data={options}
-              keyExtractor={(item) => String(item.value)}
-              style={{ maxHeight: 360 }}
-              ListEmptyComponent={
-                <Text style={{ color: colors.textSecondary, padding: 16 }}>Nenhuma opção disponível.</Text>
-              }
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    onChange(item.value);
-                    setOpen(false);
-                  }}
-                  style={[styles.option, { borderBottomColor: colors.border }]}
-                >
-                  <Text style={{ color: colors.text, fontSize: 15 }}>{item.label}</Text>
-                  {item.value === value && <Feather name="check" size={18} color={colors.primary} />}
-                </Pressable>
-              )}
-            />
-          </Pressable>
-        </Pressable>
+        {/*
+          No Android, o Modal do RN abre numa janela nativa separada (um
+          Dialog), fora da árvore de onde o SafeAreaProvider raiz (App.js)
+          mede os insets. Num build compilado (APK), essa janela do modal
+          fica sob a navigation bar do sistema, mas o insets.bottom lido do
+          provider raiz não reflete essa janela nova — daí o modal aparecer
+          por baixo da barra. No Expo Go isso "funciona por acidente" (o
+          host do Expo Go já lida com a área do sistema de outro jeito), o
+          que também explica por que usar insets.bottom ali criava padding
+          duplicado só no Expo Go.
+          A correção recomendada pela própria lib é aninhar um novo
+          SafeAreaProvider dentro do Modal, e ler os insets com
+          useSafeAreaInsets() a partir de um componente que é filho DESSE
+          provider aninhado (não do raiz) — assim o valor é medido pra
+          janela do modal em qualquer ambiente (Expo Go ou build nativo).
+        */}
+        <SafeAreaProvider>
+          <SelectFieldSheet
+            colors={colors}
+            label={label}
+            options={options}
+            value={value}
+            onChange={onChange}
+            onClose={() => setOpen(false)}
+          />
+        </SafeAreaProvider>
       </Modal>
     </View>
+  );
+}
+
+function SelectFieldSheet({ colors, label, options, value, onChange, onClose }) {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <Pressable style={styles.backdrop} onPress={onClose}>
+      <Pressable
+        style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: Math.max(insets.bottom, 24) }]}
+        onPress={(e) => e.stopPropagation()}
+      >
+        <Text style={[styles.sheetTitle, { color: colors.text }]}>{label || 'Selecione'}</Text>
+        <FlatList
+          data={options}
+          keyExtractor={(item) => String(item.value)}
+          style={{ maxHeight: 360 }}
+          ListEmptyComponent={
+            <Text style={{ color: colors.textSecondary, padding: 16 }}>Nenhuma opção disponível.</Text>
+          }
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => {
+                onChange(item.value);
+                onClose();
+              }}
+              style={[styles.option, { borderBottomColor: colors.border }]}
+            >
+              <Text style={{ color: colors.text, fontSize: 15 }}>{item.label}</Text>
+              {item.value === value && <Feather name="check" size={18} color={colors.primary} />}
+            </Pressable>
+          )}
+        />
+      </Pressable>
+    </Pressable>
   );
 }
 

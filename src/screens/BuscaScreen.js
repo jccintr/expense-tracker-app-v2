@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppTheme } from '../theme/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAppData } from '../context/DataContext';
@@ -17,6 +18,7 @@ export default function BuscaScreen({ navigation }) {
   const { colors } = useAppTheme();
   const { token } = useAuth();
   const { accounts, categories } = useAppData();
+  const insets = useSafeAreaInsets();
 
   const [description, setDescription] = useState('');
   const [minDate, setMinDate] = useState(null);
@@ -121,7 +123,7 @@ export default function BuscaScreen({ navigation }) {
         <FlatList
           data={results}
           keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 16 }]}
           ListEmptyComponent={
             <Text style={{ color: colors.textSecondary, textAlign: 'center', marginTop: 20 }}>
               Nenhuma transação encontrada.

@@ -170,3 +170,14 @@ export function formatTimeBR(isoString) {
   const sp = toSaoPauloCalendarDate(new Date(isoString));
   return `${pad2(sp.getUTCHours())}:${pad2(sp.getUTCMinutes())}`;
 }
+
+// Data + hora ('DD-MM-AAAA HH:mm') de um timestamp ISO completo, ajustado
+// pro fuso de São Paulo. Usado no card de resultado de busca (SearchResultRow),
+// onde — diferente da TransacoesScreen, que já mostra a data na barra de
+// navegação — os resultados podem vir de dias diferentes, então a data
+// completa precisa aparecer em cada linha, não só o horário.
+export function formatDateTimeBR(isoString) {
+  if (!isoString) return '';
+  const dateStr = formatDateSP(new Date(isoString));
+  return `${formatDateBR(dateStr)} ${formatTimeBR(isoString)}`;
+}
