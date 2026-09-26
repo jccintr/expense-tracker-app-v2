@@ -11,7 +11,7 @@ import ScreenHeader from '../components/ScreenHeader';
 import TextField from '../components/inputs/TextField';
 import SelectField from '../components/inputs/SelectField';
 import PrimaryButton from '../components/PrimaryButton';
-import TransactionRow from '../components/TransactionRow';
+import SearchResultRow from '../components/SearchResultRow';
 
 export default function BuscaScreen({ navigation }) {
   const { colors } = useAppTheme();
@@ -128,7 +128,7 @@ export default function BuscaScreen({ navigation }) {
             </Text>
           }
           renderItem={({ item }) => (
-            <TransactionRow
+            <SearchResultRow
               transaction={item}
               onPress={() =>
                 navigation.navigate('TransacaoForm', { mode: 'edit', transaction: item, onSaved: handleSearch })

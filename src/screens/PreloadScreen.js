@@ -51,7 +51,7 @@ export default function PreloadScreen({ navigation }) {
       setRetryError(
         error.status
           ? 'O servidor não respondeu como esperado. Tente novamente em alguns segundos.'
-          : 'Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.'
+          : 'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.'
       );
     }
   }, [navigation, signIn, refreshAll]);

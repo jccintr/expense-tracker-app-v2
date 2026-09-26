@@ -159,3 +159,14 @@ export function formatDateBR(dateStr) {
   const [y, m, d] = dateStr.split('-');
   return `${d}-${m}-${y}`;
 }
+
+// Extrai só o horário ('HH:mm') de um timestamp ISO completo (o
+// `createdAt` de cada transação), ajustado pro fuso de São Paulo. Usado no
+// card da TransacoesScreen — ali a data já está implícita (é a tela de um
+// dia só, escolhido na barra de navegação), então só o horário faz
+// sentido, sem repetir a data em cada linha.
+export function formatTimeBR(isoString) {
+  if (!isoString) return '';
+  const sp = toSaoPauloCalendarDate(new Date(isoString));
+  return `${pad2(sp.getUTCHours())}:${pad2(sp.getUTCMinutes())}`;
+}

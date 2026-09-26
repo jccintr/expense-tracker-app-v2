@@ -76,7 +76,7 @@ export default function MonthlyPieChart({ categories }) {
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center' },
+  container: { alignItems: 'center', width: '100%' },
   emptyContainer: { alignItems: 'center' },
   legend: { width: '100%', marginTop: 16 },
   legendRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6, gap: 8 },

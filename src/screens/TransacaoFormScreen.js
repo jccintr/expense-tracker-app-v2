@@ -10,11 +10,13 @@ import PrimaryButton from '../components/PrimaryButton';
 import { createTransaction, updateTransaction } from '../api/transactionsApi';
 import { parseAmountInput } from '../utils/money';
 
+
 export default function TransacaoFormScreen({ route, navigation }) {
   const { mode, transaction, onSaved } = route.params;
   const isEdit = mode === 'edit';
   const { colors } = useAppTheme();
   const { token } = useAuth();
+ 
   const { accounts, categories } = useAppData();
 
   const [description, setDescription] = useState(transaction?.description ?? '');

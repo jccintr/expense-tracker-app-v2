@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, Pressable, Modal, FlatList, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useAppTheme } from '../../theme/ThemeContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Seletor tipo "select" — mostra o valor escolhido numa caixa com a mesma
 // cara do TextField, e abre uma lista em modal pra escolher. Usado pra
@@ -12,7 +13,7 @@ import { useAppTheme } from '../../theme/ThemeContext';
 export default function SelectField({ label, value, options, onChange, placeholder = 'Selecione' }) {
   const { colors } = useAppTheme();
   const [open, setOpen] = useState(false);
-
+  const insets = useSafeAreaInsets();
   const selectedOption = options.find((o) => o.value === value);
 
   return (
@@ -21,7 +22,7 @@ export default function SelectField({ label, value, options, onChange, placehold
 
       <Pressable
         onPress={() => setOpen(true)}
-        style={[styles.field, { backgroundColor: colors.surface, borderColor: colors.border }]}
+        style={[styles.field, { backgroundColor: colors.surface, borderColor: colors.border, }]}
       >
         <Text style={{ color: selectedOption ? colors.text : colors.placeholder, fontSize: 15 }}>
           {selectedOption ? selectedOption.label : placeholder}
@@ -32,7 +33,7 @@ export default function SelectField({ label, value, options, onChange, placehold
       <Modal visible={open} animationType="slide" transparent onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
           <Pressable
-            style={[styles.sheet, { backgroundColor: colors.surface }]}
+            style={[styles.sheet, { backgroundColor: colors.surface,  paddingBottom: Math.max(insets.bottom, 24) }]}
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={[styles.sheetTitle, { color: colors.text }]}>{label || 'Selecione'}</Text>
@@ -76,8 +77,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  sheet: { borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingTop: 16, paddingBottom: 24 },
-  sheetTitle: { fontSize: 16, fontWeight: '700', paddingHorizontal: 20, marginBottom: 8 },
+  sheet: {
+     borderTopLeftRadius: 16,
+     borderTopRightRadius: 16,
+     paddingTop: 16,
+   //  paddingBottom: 24,
+  },
+  sheetTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    paddingHorizontal: 20,
+    marginBottom: 8 },
   option: {
     paddingHorizontal: 20,
     paddingVertical: 14,

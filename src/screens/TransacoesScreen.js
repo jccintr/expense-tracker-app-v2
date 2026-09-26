@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAppTheme } from '../theme/ThemeContext';
@@ -41,6 +42,37 @@ export default function TransacoesScreen({ navigation }) {
 
   const total = transactions.reduce((sum, t) => sum + Number(t.amount || 0), 0);
 
+  const goToPreviousDay = useCallback(() => {
+    setDateStr((d) => addDaysToDateString(d, -1));
+  }, []);
+
+  const goToNextDay = useCallback(() => {
+    setDateStr((d) => {
+      const next = addDaysToDateString(d, 1);
+      // Mesma regra do botão "→" (que fica desabilitado nesse caso) — sem
+      // isso, o gesto conseguiria navegar pra data futura livremente, já
+      // que um Pan gesture não tem um estado "disabled" como o Pressable.
+      return isFutureDateString(next) ? d : next;
+    });
+  }, []);
+
+  // Arraste horizontal pra trocar de dia, sem atrapalhar o scroll vertical
+  // da lista: activeOffsetX exige ~20px de movimento horizontal antes de
+  // "ativar" este gesto, e failOffsetY cede pro scroll nativo da FlatList
+  // se o movimento for majoritariamente vertical. Conta tanto um arraste
+  // decidido (translationX) quanto um flick rápido (velocityX).
+  const swipeGesture = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .failOffsetY([-10, 10])
+    .onEnd((event) => {
+      const { translationX, velocityX } = event;
+      if (translationX < -50 || velocityX < -800) {
+        goToNextDay();
+      } else if (translationX > 50 || velocityX > 800) {
+        goToPreviousDay();
+      }
+    });
+
   const handleCreate = () => {
     navigation.navigate('TransacaoForm', {
       mode: 'create',
@@ -76,7 +108,7 @@ export default function TransacoesScreen({ navigation }) {
   return (
     <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-        <Pressable onPress={() => setDateStr((d) => addDaysToDateString(d, -1))} hitSlop={10} style={styles.navButton}>
+        <Pressable onPress={goToPreviousDay} hitSlop={10} style={styles.navButton}>
           <Feather name="chevron-left" size={24} color={colors.text} />
         </Pressable>
 
@@ -88,7 +120,7 @@ export default function TransacoesScreen({ navigation }) {
         </Pressable>
 
         <Pressable
-          onPress={() => setDateStr((d) => addDaysToDateString(d, 1))}
+          onPress={goToNextDay}
           hitSlop={10}
           style={styles.navButton}
           disabled={isFutureDateString(addDaysToDateString(dateStr, 1))}
@@ -105,36 +137,40 @@ export default function TransacoesScreen({ navigation }) {
         </Pressable>
       </View>
 
-      <View style={[styles.totalBar, { backgroundColor: colors.surfaceAlt }]}>
-        <Text style={{ color: colors.textSecondary, fontSize: 13 }}>Total do dia</Text>
-        <Text style={{ color: colors.expense, fontSize: 18, fontWeight: '800' }}>{formatMoney(total)}</Text>
-      </View>
+      <GestureDetector gesture={swipeGesture}>
+        <View style={{ flex: 1 }}>
+          <View style={[styles.totalBar, { backgroundColor: colors.surfaceAlt }]}>
+            <Text style={{ color: colors.textSecondary, fontSize: 13 }}>Total do dia</Text>
+            <Text style={{ color: colors.expense, fontSize: 18, fontWeight: '800' }}>{formatMoney(total)}</Text>
+          </View>
 
-      {loading ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      ) : (
-        <FlatList
-          data={transactions}
-          keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={styles.list}
-          ListEmptyComponent={
-            <Text style={{ color: colors.textSecondary, textAlign: 'center', marginTop: 40 }}>
-              Nenhuma transação nesse dia.
-            </Text>
-          }
-          renderItem={({ item }) => (
-            <TransactionRow
-              transaction={item}
-              onPress={() =>
-                navigation.navigate('TransacaoForm', { mode: 'edit', transaction: item, onSaved: load })
+          {loading ? (
+            <View style={styles.center}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : (
+            <FlatList
+              data={transactions}
+              keyExtractor={(item) => String(item.id)}
+              contentContainerStyle={styles.list}
+              ListEmptyComponent={
+                <Text style={{ color: colors.textSecondary, textAlign: 'center', marginTop: 40 }}>
+                  Nenhuma transação nesse dia.
+                </Text>
               }
-              onDelete={() => handleDelete(item)}
+              renderItem={({ item }) => (
+                <TransactionRow
+                  transaction={item}
+                  onPress={() =>
+                    navigation.navigate('TransacaoForm', { mode: 'edit', transaction: item, onSaved: load })
+                  }
+                  onDelete={() => handleDelete(item)}
+                />
+              )}
             />
           )}
-        />
-      )}
+        </View>
+      </GestureDetector>
 
       <Pressable style={[styles.fab, { backgroundColor: colors.primary }]} onPress={handleCreate}>
         <Feather name="plus" size={26} color={colors.primaryText} />

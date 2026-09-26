@@ -2,6 +2,7 @@ import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useAppTheme } from '../theme/ThemeContext';
 import { formatMoney } from '../utils/money';
+import { formatTimeBR } from '../utils/date';
 
 export default function TransactionRow({ transaction, onPress, onDelete }) {
   const { colors } = useAppTheme();
@@ -16,7 +17,7 @@ export default function TransactionRow({ transaction, onPress, onDelete }) {
           {transaction.description}
         </Text>
         <Text style={[styles.meta, { color: colors.textSecondary }]} numberOfLines={1}>
-          {transaction.category?.name} · {transaction.account?.name}
+          {formatTimeBR(transaction.createdAt)} · {transaction.category?.name} · {transaction.account?.name}
         </Text>
       </View>
 

@@ -53,7 +53,7 @@ export default function PerfilScreen({ navigation }) {
       </View>
 
       <View style={styles.footer}>
-        <PrimaryButton title="Sair da conta" onPress={handleLogout} variant="danger" />
+        <PrimaryButton title="Logout" onPress={handleLogout} variant="danger" />
       </View>
     </View>
   );

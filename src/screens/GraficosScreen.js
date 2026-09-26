@@ -169,5 +169,5 @@ const styles = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: 14, padding: 16 },
   navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
   total: { fontSize: 22, fontWeight: '800', textAlign: 'center', marginBottom: 16 },
-  chartWrap: { alignItems: 'center' },
+  chartWrap: { alignItems: 'center', width: '100%' },
 });
